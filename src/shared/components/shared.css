@@ -1,0 +1,73 @@
+.card {
+  width: min(150%, 1240px);
+  padding: 36px 32px 28px;
+  border-radius: 32px;
+  background: #ffffff;
+  box-shadow: 0 30px 80px rgba(41, 10, 10, 0.39);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.button {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease;
+}
+
+.button--primary {
+  background: linear-gradient(90deg, #93c5fd 0%, #60a5fa 100%);
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.18);
+}
+
+.button--primary:hover {
+  filter: brightness(1.03);
+}
+
+.input-field {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  font-weight: 500;
+  color: #334155;
+}
+
+.input-field__label {
+  font-size: 14px;
+}
+
+.input-field__control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 28px;
+  min-height: 28px;
+  border-radius: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.input-field__icon {
+  width: 20px;
+  height: 20px;
+  color: #0c4a6e;
+}
+
+.input-field input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.input-field input::placeholder {
+  color: #94a3b8;
+}
