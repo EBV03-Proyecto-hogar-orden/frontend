@@ -98,3 +98,31 @@ textarea:-webkit-autofill:focus {
 #root {
   min-height: 100vh;
 }
+
+.home-layout {
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.logout-btn {
+  background: #ffbc66;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.loading {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  font-size: 1.5rem;
+  color: #aaddf3;
+}

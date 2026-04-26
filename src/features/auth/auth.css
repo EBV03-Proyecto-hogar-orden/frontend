@@ -131,10 +131,27 @@
   color: #8c8c8c;
 }
 
-.auth-footer a {
+.auth-footer a,
+.auth-link-btn {
   color: #ffbc66;
   text-decoration: none;
   font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.auth-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  border: 1px solid #fee2e2;
+  text-align: center;
 }
 
 @media (max-width: 480px) {
