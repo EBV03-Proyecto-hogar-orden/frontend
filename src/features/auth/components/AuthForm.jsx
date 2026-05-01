@@ -38,7 +38,6 @@ function AuthForm({ type = "login", onToggle }) {
     }
   }, [isLogin, getPasswordRules]);
 
-  // Reset form when toggling between login and register
   useEffect(() => {
     if (!showModal) {
       setFormData({
