@@ -49,8 +49,13 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const getPasswordRules = async () => {
+    const response = await api.get("/users/password-rules/");
+    return response.data;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, register, logout, getPasswordRules, loading, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

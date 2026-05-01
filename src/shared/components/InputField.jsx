@@ -1,8 +1,9 @@
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, User } from "lucide-react";
 
 const icons = {
   Mail,
   Lock,
+  User,
 };
 
 function InputField({ label, icon, className = "", ...props }) {
