@@ -38,6 +38,19 @@ function AuthForm({ type = "login", onToggle }) {
     }
   }, [isLogin, getPasswordRules]);
 
+  // Reset form when toggling between login and register
+  useEffect(() => {
+    if (!showModal) {
+      setFormData({
+        email: "",
+        password: "",
+        username: "",
+        password_confirm: "",
+      });
+      setErrors({});
+    }
+  }, [type]);
+
   useEffect(() => {
     if (isLogin) return;
 
