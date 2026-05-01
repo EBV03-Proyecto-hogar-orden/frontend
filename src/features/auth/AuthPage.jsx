@@ -28,7 +28,7 @@ function AuthPage() {
         </div>
 
         <Card className="auth-card">
-          <AuthForm type={authType} onToggle={toggleAuth} />
+          <AuthForm key={authType} type={authType} onToggle={toggleAuth} />
         </Card>
       </div>
     </main>

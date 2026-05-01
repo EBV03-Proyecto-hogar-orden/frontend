@@ -15,12 +15,6 @@ function AuthForm({ type = "login", onToggle }) {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [rules, setRules] = useState(null);
-  const [validation, setValidation] = useState({
-    length: false,
-    letter: false,
-    number: false,
-    special: false,
-  });
 
   const isLogin = type === "login";
 
@@ -38,62 +32,29 @@ function AuthForm({ type = "login", onToggle }) {
     }
   }, [isLogin, getPasswordRules]);
 
-  useEffect(() => {
-    if (!showModal) {
-      setFormData({
-        email: "",
-        password: "",
-        username: "",
-        password_confirm: "",
-      });
-      setErrors({});
-    }
-  }, [type]);
-
-  useEffect(() => {
-    if (isLogin) return;
-
-    const newErrors = { ...errors };
-
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "El correo electrónico no es válido";
-    } else {
-      delete newErrors.email;
-    }
-
-    if (formData.password_confirm && formData.password !== formData.password_confirm) {
-      newErrors.password_confirm = "Las contraseñas no coinciden";
-    } else {
-      delete newErrors.password_confirm;
-    }
-
-    if (rules) {
-      const { password } = formData;
-      const newValidation = {
-        length: password.length >= (rules.min_length || 8),
-        letter: /[A-Za-z]/.test(password),
-        number: /\d/.test(password),
-        special: new RegExp(`[${rules.special_chars_allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}]`).test(password),
-      };
-      setValidation(newValidation);
-
-      if (password && rules.regex && !new RegExp(rules.regex).test(password)) {
-        newErrors.password = "La contraseña no cumple con los requisitos";
-      } else {
-        delete newErrors.password;
-      }
-    }
-
-    setErrors(newErrors);
-  }, [formData, rules, isLogin]);
+  const validation = {
+    length: formData.password.length >= (rules?.min_length || 8),
+    letter: /[A-Za-z]/.test(formData.password),
+    number: /\d/.test(formData.password),
+    special: rules ? new RegExp(`[${rules.special_chars_allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}]`).test(formData.password) : false,
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (errors[name]) {
+      setErrors(prev => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
 
     const requiredFields = isLogin ? ["email", "password"] : ["username", "email", "password", "password_confirm"];
     const hasEmptyFields = requiredFields.some(field => !formData[field]);
@@ -104,15 +65,27 @@ function AuthForm({ type = "login", onToggle }) {
     }
 
     if (!isLogin) {
-      const hasErrors = Object.keys(errors).filter(k => k !== 'general').length > 0;
-      if (hasErrors) {
-        setErrors(prev => ({ ...prev, general: "Por favor corrige los errores antes de continuar" }));
+      const newErrors = {};
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        newErrors.email = "El correo electrónico no es válido";
+      }
+
+      if (rules?.regex && !new RegExp(rules.regex).test(formData.password)) {
+        newErrors.password = "La contraseña no cumple con los requisitos";
+      }
+
+      if (formData.password !== formData.password_confirm) {
+        newErrors.password_confirm = "Las contraseñas no coinciden";
+      }
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
         return;
       }
     }
 
     setLoading(true);
-    setErrors({});
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
