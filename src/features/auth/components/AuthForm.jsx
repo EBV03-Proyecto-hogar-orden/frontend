@@ -66,7 +66,7 @@ function AuthForm({ type = "login", onToggle }) {
       setValidation(newValidation);
 
       if (password && rules.regex && !new RegExp(rules.regex).test(password)) {
-        newErrors.password = "La contraseña debe tener al menos 8 caracteres y contener letras y números y caracteres especiales";
+        newErrors.password = "La contraseña no cumple con los requisitos";
       } else {
         delete newErrors.password;
       }
@@ -116,17 +116,36 @@ function AuthForm({ type = "login", onToggle }) {
       }
     } catch (err) {
       const data = err.response?.data;
-      let detail = data?.detail || data?.message || "Ocurrió un error";
-      const field = data?.field;
+      console.log("Error data:", data);
 
-      if (detail.toLowerCase().includes("email") && detail.toLowerCase().includes("registrado")) {
-        detail = "Este correo ya está registrado";
-      }
+      if (data && typeof data === "object" && !data.detail && !data.message) {
+        const newErrors = {};
+        Object.keys(data).forEach((key) => {
+          let msg = Array.isArray(data[key]) ? data[key][0] : data[key];
 
-      if (field && (field === "email" || field === "username" || field === "password")) {
-        setErrors({ [field]: detail });
+          if (key === "email" && msg.toLowerCase().includes("already exists")) {
+            msg = "Este correo ya está registrado";
+          }
+          if (key === "username" && msg.toLowerCase().includes("already exists")) {
+            msg = "Este nombre de usuario ya está en uso";
+          }
+
+          newErrors[key] = msg;
+        });
+        setErrors(newErrors);
       } else {
-        setErrors({ general: detail });
+        let detail = data?.detail || data?.message || "Ocurrió un error";
+        const field = data?.field;
+
+        if (detail.toLowerCase().includes("email") && detail.toLowerCase().includes("registrado")) {
+          detail = "Este correo ya está registrado";
+        }
+
+        if (field && (field === "email" || field === "username" || field === "password")) {
+          setErrors({ [field]: detail });
+        } else {
+          setErrors({ general: detail });
+        }
       }
     } finally {
       setLoading(false);
