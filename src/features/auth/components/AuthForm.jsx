@@ -11,7 +11,7 @@ function AuthForm({ type = "login", onToggle }) {
     username: "",
     password_confirm: "",
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [rules, setRules] = useState(null);
@@ -39,16 +39,41 @@ function AuthForm({ type = "login", onToggle }) {
   }, [isLogin, getPasswordRules]);
 
   useEffect(() => {
-    if (!isLogin && rules) {
+    if (isLogin) return;
+
+    const newErrors = { ...errors };
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "El correo electrónico no es válido";
+    } else {
+      delete newErrors.email;
+    }
+
+    if (formData.password_confirm && formData.password !== formData.password_confirm) {
+      newErrors.password_confirm = "Las contraseñas no coinciden";
+    } else {
+      delete newErrors.password_confirm;
+    }
+
+    if (rules) {
       const { password } = formData;
-      setValidation({
+      const newValidation = {
         length: password.length >= (rules.min_length || 8),
         letter: /[A-Za-z]/.test(password),
         number: /\d/.test(password),
         special: new RegExp(`[${rules.special_chars_allowed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}]`).test(password),
-      });
+      };
+      setValidation(newValidation);
+
+      if (password && rules.regex && !new RegExp(rules.regex).test(password)) {
+        newErrors.password = "La contraseña debe tener al menos 8 caracteres y contener letras y números y caracteres especiales";
+      } else {
+        delete newErrors.password;
+      }
     }
-  }, [formData.password, rules, isLogin]);
+
+    setErrors(newErrors);
+  }, [formData, rules, isLogin]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,24 +82,25 @@ function AuthForm({ type = "login", onToggle }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+
+    const requiredFields = isLogin ? ["email", "password"] : ["username", "email", "password", "password_confirm"];
+    const hasEmptyFields = requiredFields.some(field => !formData[field]);
+
+    if (hasEmptyFields) {
+      setErrors({ general: "Todos los campos son obligatorios" });
+      return;
+    }
 
     if (!isLogin) {
-      if (formData.password !== formData.password_confirm) {
-        setError("Las contraseñas no coinciden");
+      const hasErrors = Object.keys(errors).filter(k => k !== 'general').length > 0;
+      if (hasErrors) {
+        setErrors(prev => ({ ...prev, general: "Por favor corrige los errores antes de continuar" }));
         return;
-      }
-
-      if (rules && rules.regex) {
-        const regex = new RegExp(rules.regex);
-        if (!regex.test(formData.password)) {
-          setError(rules.message || "La contraseña no cumple con los requisitos");
-          return;
-        }
       }
     }
 
     setLoading(true);
+    setErrors({});
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
@@ -85,10 +111,23 @@ function AuthForm({ type = "login", onToggle }) {
           password: formData.password,
           password_confirm: formData.password_confirm,
         });
+
         setShowModal(true);
       }
     } catch (err) {
-      setError(err.response?.data?.detail || err.response?.data?.message || "Ocurrió un error");
+      const data = err.response?.data;
+      let detail = data?.detail || data?.message || "Ocurrió un error";
+      const field = data?.field;
+
+      if (detail.toLowerCase().includes("email") && detail.toLowerCase().includes("registrado")) {
+        detail = "Este correo ya está registrado";
+      }
+
+      if (field && (field === "email" || field === "username" || field === "password")) {
+        setErrors({ [field]: detail });
+      } else {
+        setErrors({ general: detail });
+      }
     } finally {
       setLoading(false);
     }
@@ -102,36 +141,44 @@ function AuthForm({ type = "login", onToggle }) {
   return (
     <>
       <form className="auth-form" onSubmit={handleSubmit}>
-        {error && (
+        {errors.general && (
           <div className="auth-error">
             <AlertCircle size={16} />
-            {error}
+            {errors.general}
           </div>
         )}
 
         {!isLogin && (
-          <InputField
-            label="Usuario"
-            icon="User"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="nombreusuario"
-            required
-          />
+          <div className="field-wrapper">
+            <InputField
+              label="Usuario"
+              icon="User"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="nombre de usuario"
+              className={errors.username ? "error" : ""}
+              required
+            />
+            {errors.username && <span className="field-error">{errors.username}</span>}
+          </div>
         )}
 
-        <InputField
-          label="Correo electrónico"
-          icon="Mail"
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="tu@email.com"
-          autoComplete="email"
-          required
-        />
+        <div className="field-wrapper">
+          <InputField
+            label="Correo electrónico"
+            icon="Mail"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="tu@email.com"
+            autoComplete="email"
+            className={errors.email ? "error" : ""}
+            required
+          />
+          {errors.email && <span className="field-error">{errors.email}</span>}
+        </div>
 
         <div className="password-field-group">
           <InputField
@@ -143,8 +190,10 @@ function AuthForm({ type = "login", onToggle }) {
             onChange={handleChange}
             placeholder="••••••••"
             autoComplete={isLogin ? "current-password" : "new-password"}
+            className={errors.password ? "error" : ""}
             required
           />
+          {errors.password && <span className="field-error">{errors.password}</span>}
 
           {!isLogin && rules && (
             <div className="password-requirements">
@@ -160,7 +209,7 @@ function AuthForm({ type = "login", onToggle }) {
                   </span>
                 </div>
                 <div className="strength-meter__bar">
-                  <div 
+                  <div
                     className={`strength-meter__fill strength-${Object.values(validation).filter(Boolean).length}`}
                     style={{ width: `${(Object.values(validation).filter(Boolean).length / Object.values(validation).length) * 100}%` }}
                   />
@@ -197,16 +246,20 @@ function AuthForm({ type = "login", onToggle }) {
         </div>
 
         {!isLogin && (
-          <InputField
-            label="Confirmar contraseña"
-            icon="Lock"
-            type="password"
-            name="password_confirm"
-            value={formData.password_confirm}
-            onChange={handleChange}
-            placeholder="••••••••"
-            required
-          />
+          <div className="field-wrapper">
+            <InputField
+              label="Confirmar contraseña"
+              icon="Lock"
+              type="password"
+              name="password_confirm"
+              value={formData.password_confirm}
+              onChange={handleChange}
+              placeholder="••••••••"
+              className={errors.password_confirm ? "error" : ""}
+              required
+            />
+            {errors.password_confirm && <span className="field-error">{errors.password_confirm}</span>}
+          </div>
         )}
 
         {isLogin && (
@@ -245,8 +298,8 @@ function AuthForm({ type = "login", onToggle }) {
         onClose={handleModalClose}
         type="success"
         title="¡Cuenta creada!"
-        message="Tu usuario ha sido registrado exitosamente. Redirigiendo al inicio de sesión..."
-        duration={2500}
+        message="¡Cuenta creada exitosamente!"
+        duration={2000}
         showActions={false}
       />
     </>
