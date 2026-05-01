@@ -148,6 +148,25 @@ function AuthForm({ type = "login", onToggle }) {
 
           {!isLogin && rules && (
             <div className="password-requirements">
+              <div className="strength-meter">
+                <div className="strength-meter__header">
+                  <span className="strength-label">Fortaleza:</span>
+                  <span className={`strength-text strength-${Object.values(validation).filter(Boolean).length}`}>
+                    {Object.values(validation).filter(Boolean).length === 0 && "Muy débil"}
+                    {Object.values(validation).filter(Boolean).length === 1 && "Débil"}
+                    {Object.values(validation).filter(Boolean).length === 2 && "Media"}
+                    {Object.values(validation).filter(Boolean).length === 3 && "Fuerte"}
+                    {Object.values(validation).filter(Boolean).length === 4 && "Muy fuerte"}
+                  </span>
+                </div>
+                <div className="strength-meter__bar">
+                  <div 
+                    className={`strength-meter__fill strength-${Object.values(validation).filter(Boolean).length}`}
+                    style={{ width: `${(Object.values(validation).filter(Boolean).length / Object.values(validation).length) * 100}%` }}
+                  />
+                </div>
+              </div>
+
               <p className="requirements-title">Requisitos de seguridad:</p>
               <ul className="requirements-list">
                 <li className={validation.length ? "met" : ""}>

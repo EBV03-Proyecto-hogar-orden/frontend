@@ -170,6 +170,56 @@
   border: 1px solid #f1f5f9;
 }
 
+.strength-meter {
+  margin-bottom: 16px;
+}
+
+.strength-meter__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.strength-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.strength-text {
+  font-size: 12px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.strength-meter__bar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.strength-meter__fill {
+  height: 100%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0;
+}
+
+/* Strength Colors */
+.strength-0 { color: #94a3b8; }
+.strength-1 { color: #ef4444; }
+.strength-2 { color: #f59e0b; }
+.strength-3 { color: #10b981; }
+.strength-4 { color: #059669; }
+
+.strength-meter__fill.strength-1 { background-color: #ef4444; }
+.strength-meter__fill.strength-2 { background-color: #f59e0b; }
+.strength-meter__fill.strength-3 { background-color: #10b981; }
+.strength-meter__fill.strength-4 { background-color: #059669; }
+
 .requirements-title {
   font-size: 11px;
   font-weight: 700;
