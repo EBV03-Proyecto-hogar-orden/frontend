@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
-import api from "../../../shared/utils/api";
+import authService from "../services/authService";
+import { mapUserFromToken } from "../utils/authMapper";
 
 const AuthContext = createContext();
 
@@ -8,14 +9,19 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const logout = useCallback(() => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setUser(null);
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        // Check expiration
         if (decoded.exp * 1000 > Date.now()) {
-          setUser(decoded);
+          setUser(mapUserFromToken(decoded));
         } else {
           logout();
         }
@@ -24,34 +30,27 @@ export const AuthProvider = ({ children }) => {
       }
     }
     setLoading(false);
-  }, []);
+  }, [logout]);
 
   const login = async (email, password) => {
-    const response = await api.post("/users/login/", { email, password });
-    const { access, refresh } = response.data;
-    
+    const data = await authService.login(email, password);
+    const { access, refresh } = data;
+
     localStorage.setItem("accessToken", access);
     localStorage.setItem("refreshToken", refresh);
-    
+
     const decoded = jwtDecode(access);
-    setUser(decoded);
-    return decoded;
+    const mappedUser = mapUserFromToken(decoded);
+    setUser(mappedUser);
+    return mappedUser;
   };
 
   const register = async (userData) => {
-    const response = await api.post("/users/register/", userData);
-    return response.data;
-  };
-
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    setUser(null);
+    return await authService.register(userData);
   };
 
   const getPasswordRules = async () => {
-    const response = await api.get("/users/password-rules/");
-    return response.data;
+    return await authService.getPasswordRules();
   };
 
   return (
