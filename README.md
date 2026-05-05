@@ -1,10 +1,10 @@
-# 🚀 EBV03 - Frontend: Plataforma de Gestión
+# EBV03 - Frontend: Plataforma de Gestión
 
 ¡Bienvenido al repositorio frontend de **EBV03**! Esta es una aplicación moderna construida con **React 19** y **Vite**, diseñada para ofrecer una experiencia de usuario fluida, rápida y profesional.
 
 ---
 
-## 🛠️ Tecnologías Principales
+## Tecnologías Principales
 
 - **Framework:** [React 19](https://react.dev/)
 - **Build Tool:** [Vite 8](https://vitejs.dev/)
@@ -15,7 +15,7 @@
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 El proyecto sigue una arquitectura **basada en características (Feature-based)** para mantener el código escalable y organizado.
 
@@ -40,35 +40,42 @@ src/
 
 ---
 
-## 🚀 Inicio Rápido
+## Inicio Rápido
 
 Sigue estos pasos para ejecutar el proyecto localmente:
 
 ### 1. Requisitos Previos
+
 - Node.js (v18 o superior recomendado)
 - npm o yarn
 
 ### 2. Instalación
+
 Clona el repositorio y ejecuta:
+
 ```bash
 npm install
 ```
 
 ### 3. Variables de Entorno
+
 Crea un archivo `.env` en la raíz del proyecto y configura la URL de la API:
+
 ```env
 VITE_API_URL=http://localhost:8000/api
 ```
 
 ### 4. Ejecución en Desarrollo
+
 ```bash
 npm run dev
 ```
+
 La aplicación estará disponible en `http://localhost:5173`.
 
 ---
 
-## 📜 Scripts Disponibles
+## Scripts Disponibles
 
 - `npm run dev`: Inicia el servidor de desarrollo con HMR.
 - `npm run build`: Compila la aplicación para producción en la carpeta `dist/`.
@@ -77,7 +84,7 @@ La aplicación estará disponible en `http://localhost:5173`.
 
 ---
 
-## 🎨 Principios de Diseño
+## Principios de Diseño
 
 - **Componentización:** Reutilización máxima de componentes en `shared/`.
 - **Clean Architecture:** Separación clara entre la lógica de negocio (hooks/services) y la presentación (JSX).
@@ -85,7 +92,7 @@ La aplicación estará disponible en `http://localhost:5173`.
 
 ---
 
-## 🤝 Contribución
+## Contribución
 
 1. Crea una rama para tu característica: `git checkout -b feature/nueva-funcionalidad`
 2. Realiza tus cambios y haz commit: `git commit -m 'Añade nueva funcionalidad'`
