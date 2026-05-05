@@ -103,34 +103,60 @@ function AuthForm({ type = "login", onToggle }) {
       const data = err.response?.data;
       console.log("Error data:", data);
 
-      if (data && typeof data === "object" && !data.detail && !data.message) {
-        const newErrors = {};
-        Object.keys(data).forEach((key) => {
-          let msg = Array.isArray(data[key]) ? data[key][0] : data[key];
-
-          if (key === "email" && msg.toLowerCase().includes("already exists")) {
-            msg = "Este correo ya está registrado";
-          }
-          if (key === "username" && msg.toLowerCase().includes("already exists")) {
-            msg = "Este nombre de usuario ya está en uso";
-          }
-
-          newErrors[key] = msg;
-        });
-        setErrors(newErrors);
-      } else {
-        let detail = data?.detail || data?.message || "Ocurrió un error";
-        const field = data?.field;
-
-        if (detail.toLowerCase().includes("email") && detail.toLowerCase().includes("registrado")) {
-          detail = "Este correo ya está registrado";
+      if (data && typeof data === "object") {
+        if (data.code === "account_locked") {
+          setErrors({
+            general: data.detail,
+            locked: true,
+            locked_until: data.locked_until
+          });
+          setLoading(false);
+          return;
         }
 
-        if (field && (field === "email" || field === "username" || field === "password")) {
-          setErrors({ [field]: detail });
+        if (data.attempts_left !== undefined) {
+          setErrors(prev => ({
+            ...prev,
+            general: `${data.detail} Intentos restantes: ${data.attempts_left}`,
+            attempts_left: data.attempts_left
+          }));
+          setLoading(false);
+          return;
+        }
+
+        if (!data.detail && !data.message) {
+          const newErrors = {};
+          Object.keys(data).forEach((key) => {
+            let msg = Array.isArray(data[key]) ? data[key][0] : data[key];
+
+            if (key === "email" && msg.toLowerCase().includes("already exists")) {
+              msg = "Este correo ya está registrado";
+            }
+            if (key === "username" && msg.toLowerCase().includes("already exists")) {
+              msg = "Este nombre de usuario ya está en uso";
+            }
+
+            newErrors[key] = msg;
+          });
+          setErrors(newErrors);
         } else {
-          setErrors({ general: detail });
+          let detail = data?.detail || data?.message || "Ocurrió un error";
+          if (Array.isArray(detail)) detail = detail[0];
+
+          const field = data?.field;
+
+          if (detail.toLowerCase().includes("email") && detail.toLowerCase().includes("registrado")) {
+            detail = "Este correo ya está registrado";
+          }
+
+          if (field && (field === "email" || field === "username" || field === "password")) {
+            setErrors({ [field]: detail });
+          } else {
+            setErrors({ general: detail });
+          }
         }
+      } else {
+        setErrors({ general: "Error de conexión con el servidor" });
       }
     } finally {
       setLoading(false);
@@ -146,9 +172,20 @@ function AuthForm({ type = "login", onToggle }) {
     <>
       <form className="auth-form" onSubmit={handleSubmit}>
         {errors.general && (
-          <div className="auth-error">
-            <AlertCircle size={16} />
-            {errors.general}
+          <div className={`auth-error ${errors.locked ? "locked" : ""}`}>
+            {errors.locked ? <AlertCircle size={18} /> : <AlertCircle size={16} />}
+            <div className="error-content">
+              {errors.general}
+              {errors.locked && errors.locked_until && (
+                <span className="lock-timer">
+                  Disponible a las: {(() => {
+                    const dateStr = errors.locked_until;
+                    const date = new Date(dateStr);
+                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                  })()}
+                </span>
+              )}
+            </div>
           </div>
         )}
 

@@ -147,14 +147,33 @@
 .auth-error {
   background: #fef2f2;
   color: #b91c1c;
-  padding: 12px;
+  padding: 14px;
   border-radius: 12px;
   font-size: 13px;
   border: 1px solid #fee2e2;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.auth-error.locked {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: #ffedd5;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lock-timer {
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
 }
 
 .password-field-group {
