@@ -1,0 +1,412 @@
+:root {
+  --color-yellow-light: #fff3cd;
+  --color-yellow-dark: #f5c05b;
+  --color-blue-light: #cde6f6;
+  --color-blue-dark: #4fa5d6;
+  --color-green-light: #def7ec;
+  --color-green-dark: #31c48d;
+  --color-red-light: #fde8e8;
+  --color-red-dark: #f05252;
+  --color-orange-light: #fdf6b2;
+  --color-orange-dark: #f5a623;
+  --color-gray-light: #f3f4f6;
+  --color-gray-dark: #6b7280;
+  --color-text-main: #374151;
+  --color-text-muted: #9ca3af;
+  --bg-page: #fbfbfb;
+  --border-radius-lg: 16px;
+  --border-radius-md: 12px;
+  --border-radius-sm: 8px;
+}
+
+.home-layout {
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  color: var(--color-text-main);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 40px;
+  background-color: white;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.home-header__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.home-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-invite {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-blue-light);
+  color: white; /* Wait, in mockup the button is light blue with white text. Wait, light blue bg and white text might lack contrast. The mockup shows a light blue button with white text and icon. */
+  background-color: #b3e0f2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.user-profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: white;
+}
+
+.avatar--blue {
+  background-color: #b3e0f2;
+}
+
+/* Content */
+.home-content {
+  padding: 32px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Action Cards */
+.action-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.action-card {
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  min-height: 140px;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+}
+
+.action-card--filled.action-card--yellow {
+  background-color: var(--color-yellow-light);
+  border: 1px solid transparent;
+}
+.action-card--filled.action-card--yellow .action-card__icon-wrapper {
+  background-color: var(--color-yellow-dark);
+  color: white;
+}
+
+.action-card--filled.action-card--blue {
+  background-color: var(--color-blue-light);
+  border: 1px solid transparent;
+}
+.action-card--filled.action-card--blue .action-card__icon-wrapper {
+  background-color: var(--color-blue-dark);
+  color: white;
+}
+
+.action-card--outline {
+  background-color: white;
+}
+.action-card--outline.action-card--blue {
+  border: 1px solid var(--color-blue-light);
+}
+.action-card--outline.action-card--blue .action-card__icon-wrapper {
+  background-color: var(--color-blue-dark);
+  color: white;
+}
+
+.action-card--outline.action-card--yellow {
+  border: 1px solid var(--color-yellow-light);
+}
+.action-card--outline.action-card--yellow .action-card__icon-wrapper {
+  background-color: var(--color-orange-dark);
+  color: white;
+}
+
+.action-card__icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-card__title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--color-text-main);
+}
+
+/* Filter Section */
+.filter-section {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: 16px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-label {
+  font-size: 14px;
+  color: var(--color-gray-dark);
+}
+
+.filter-pills {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-pill {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: none;
+  background-color: var(--color-gray-light);
+  color: var(--color-gray-dark);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-pill--active-blue {
+  background-color: var(--color-blue-light);
+  color: white;
+}
+
+.filter-pill--active-yellow {
+  background-color: var(--color-yellow-dark);
+  color: white;
+}
+
+/* Task Grid */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.task-grid-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-gray-dark);
+  background: white;
+  border-radius: var(--border-radius-lg);
+}
+
+/* Task Card */
+.task-card {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Badges */
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge--red { background-color: var(--color-red-light); color: var(--color-red-dark); }
+.badge--orange { background-color: var(--color-orange-light); color: var(--color-orange-dark); }
+.badge--green { background-color: var(--color-green-light); color: var(--color-green-dark); }
+.badge--gray { background-color: var(--color-gray-light); color: var(--color-gray-dark); }
+
+.task-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--color-text-main);
+}
+
+.task-card__desc {
+  font-size: 14px;
+  color: var(--color-gray-dark);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.task-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-gray-dark);
+}
+
+.task-card__footer {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-selector label {
+  font-size: 13px;
+  color: var(--color-gray-dark);
+}
+
+.status-select {
+  padding: 8px 12px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: var(--color-text-main);
+  background-color: white;
+  cursor: pointer;
+  appearance: none; /* simple way, ideally add custom chevron */
+}
+
+.task-card__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action, .btn-icon {
+  border: none;
+  border-radius: var(--border-radius-sm);
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: opacity 0.2s;
+  position: relative;
+}
+
+.btn-action:hover, .btn-icon:hover {
+  opacity: 0.8;
+}
+
+.btn-action--edit {
+  background-color: var(--color-blue-light);
+  color: white;
+  flex: 1;
+}
+
+.btn-icon--yellow {
+  background-color: var(--color-yellow-light);
+  color: var(--color-yellow-dark);
+  width: 36px;
+}
+
+.btn-icon--red {
+  background-color: var(--color-red-light);
+  color: var(--color-red-dark);
+  width: 36px;
+}
+
+.btn-icon__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: var(--color-orange-dark);
+  color: white;
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .action-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .task-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+}

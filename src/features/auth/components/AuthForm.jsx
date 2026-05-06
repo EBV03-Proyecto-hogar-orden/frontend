@@ -9,6 +9,8 @@ function AuthForm({ type = "login", onToggle }) {
     email: "",
     password: "",
     username: "",
+    first_name: "",
+    last_name: "",
     password_confirm: "",
   });
   const [errors, setErrors] = useState({});
@@ -56,7 +58,7 @@ function AuthForm({ type = "login", onToggle }) {
     e.preventDefault();
     setErrors({});
 
-    const requiredFields = isLogin ? ["email", "password"] : ["username", "email", "password", "password_confirm"];
+    const requiredFields = isLogin ? ["email", "password"] : ["username", "email", "first_name", "last_name", "password", "password_confirm"];
     const hasEmptyFields = requiredFields.some(field => !formData[field]);
 
     if (hasEmptyFields) {
@@ -93,6 +95,8 @@ function AuthForm({ type = "login", onToggle }) {
         await register({
           email: formData.email,
           username: formData.username,
+          first_name: formData.first_name,
+          last_name: formData.last_name,
           password: formData.password,
           password_confirm: formData.password_confirm,
         });
@@ -202,6 +206,38 @@ function AuthForm({ type = "login", onToggle }) {
               required
             />
             {errors.username && <span className="field-error">{errors.username}</span>}
+          </div>
+        )}
+
+        {!isLogin && (
+          <div className="field-wrapper">
+            <InputField
+              label="Nombre"
+              icon="User"
+              name="first_name"
+              value={formData.first_name}
+              onChange={handleChange}
+              placeholder="tu nombre"
+              className={errors.first_name ? "error" : ""}
+              required
+            />
+            {errors.first_name && <span className="field-error">{errors.first_name}</span>}
+          </div>
+        )}
+
+        {!isLogin && (
+          <div className="field-wrapper">
+            <InputField
+              label="Apellido"
+              icon="User"
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+              placeholder="tu apellido"
+              className={errors.last_name ? "error" : ""}
+              required
+            />
+            {errors.last_name && <span className="field-error">{errors.last_name}</span>}
           </div>
         )}
 
