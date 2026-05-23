@@ -3,7 +3,7 @@ import { Button, InputField, Modal } from "../../../shared/components";
 import { useAuth } from "../hooks/AuthContext";
 import { CheckCircle2, Circle, AlertCircle } from "lucide-react";
 
-function AuthForm({ type = "login", onToggle }) {
+function AuthForm({ type = "login", onToggle, onForgotPassword }) {
   const { login, register, getPasswordRules } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -170,6 +170,15 @@ function AuthForm({ type = "login", onToggle }) {
   const handleModalClose = () => {
     setShowModal(false);
     onToggle();
+  };
+
+  const handleForgotClick = (e) => {
+    console.log("Forgot password link clicked. Prop onForgotPassword is type:", typeof onForgotPassword);
+    if (onForgotPassword) {
+      onForgotPassword();
+    } else {
+      console.warn("onForgotPassword prop is not defined!");
+    }
   };
 
   return (
@@ -341,9 +350,9 @@ function AuthForm({ type = "login", onToggle }) {
 
         {isLogin && (
           <div className="auth-info">
-            <a href="#" className="auth-link">
+            <button type="button" onClick={handleForgotClick} className="auth-link-btn">
               ¿Olvidaste tu contraseña?
-            </a>
+            </button>
           </div>
         )}
 

@@ -12,6 +12,7 @@ const Modal = ({
   onConfirm,
   duration = 0, // 0 means no auto-close
   showActions = true,
+  children,
 }) => {
   useEffect(() => {
     const handleEscape = (e) => {
@@ -61,7 +62,8 @@ const Modal = ({
             {icons[type]}
           </div>
           <h2 className="modal-title">{title}</h2>
-          <p className="modal-message">{message}</p>
+          {message && <p className="modal-message">{message}</p>}
+          {children}
         </div>
 
         {showActions && (
@@ -81,5 +83,6 @@ const Modal = ({
     </div>
   );
 };
+
 
 export default Modal;

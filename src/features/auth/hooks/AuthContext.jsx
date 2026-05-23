@@ -8,11 +8,26 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [homeGroup, setHomeGroup] = useState(null);
+  const [loadingGroup, setLoadingGroup] = useState(true);
 
   const logout = useCallback(() => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setUser(null);
+    setHomeGroup(null);
+  }, []);
+
+  const fetchHomeGroup = useCallback(async () => {
+    setLoadingGroup(true);
+    try {
+      const groupData = await authService.getMyGroup();
+      setHomeGroup(groupData);
+    } catch (error) {
+      setHomeGroup(null);
+    } finally {
+      setLoadingGroup(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -22,15 +37,20 @@ export const AuthProvider = ({ children }) => {
         const decoded = jwtDecode(token);
         if (decoded.exp * 1000 > Date.now()) {
           setUser(mapUserFromToken(decoded));
+          fetchHomeGroup();
         } else {
           logout();
+          setLoadingGroup(false);
         }
       } catch (error) {
         logout();
+        setLoadingGroup(false);
       }
+    } else {
+      setLoadingGroup(false);
     }
     setLoading(false);
-  }, [logout]);
+  }, [logout, fetchHomeGroup]);
 
   const login = async (email, password) => {
     const data = await authService.login(email, password);
@@ -42,6 +62,17 @@ export const AuthProvider = ({ children }) => {
     const decoded = jwtDecode(access);
     const mappedUser = mapUserFromToken(decoded);
     setUser(mappedUser);
+    
+    // Fetch home group details upon successful login
+    try {
+      const groupData = await authService.getMyGroup();
+      setHomeGroup(groupData);
+    } catch (e) {
+      setHomeGroup(null);
+    } finally {
+      setLoadingGroup(false);
+    }
+    
     return mappedUser;
   };
 
@@ -53,8 +84,56 @@ export const AuthProvider = ({ children }) => {
     return await authService.getPasswordRules();
   };
 
+  const requestPasswordReset = async (email) => {
+    return await authService.requestPasswordReset(email);
+  };
+
+  const confirmPasswordReset = async (uid, token, password, passwordConfirm) => {
+    return await authService.confirmPasswordReset(uid, token, password, passwordConfirm);
+  };
+
+  const createGroup = async (name) => {
+    const data = await authService.createHomeGroup(name);
+    setHomeGroup(data);
+    return data;
+  };
+
+  const joinGroup = async (inviteCode) => {
+    const data = await authService.joinHomeGroup(inviteCode);
+    setHomeGroup(data);
+    return data;
+  };
+
+  const switchGroup = async (groupId) => {
+    const data = await authService.switchHomeGroup(groupId);
+    setHomeGroup(data);
+    return data;
+  };
+
+  const listGroups = async () => {
+    return await authService.listHomeGroups();
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, getPasswordRules, loading, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{
+      user,
+      login,
+      register,
+      logout,
+      getPasswordRules,
+      requestPasswordReset,
+      confirmPasswordReset,
+      loading,
+      isAuthenticated: !!user,
+      homeGroup,
+      loadingGroup,
+      createGroup,
+      joinGroup,
+      switchGroup,
+      listGroups,
+      fetchHomeGroup
+    }}>
+
       {children}
     </AuthContext.Provider>
   );
