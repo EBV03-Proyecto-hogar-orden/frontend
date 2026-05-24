@@ -44,7 +44,9 @@ export const authService = {
   },
 
   joinHomeGroup: async (inviteCode) => {
-    const response = await api.post("/users/home-groups/join/", { invite_code: inviteCode });
+    const response = await api.post("/users/home-groups/join/", {
+      invite_code: inviteCode,
+    });
     return response.data;
   },
 
@@ -54,11 +56,11 @@ export const authService = {
   },
 
   switchHomeGroup: async (groupId) => {
-    const response = await api.post("/users/home-groups/switch/", { group_id: groupId });
+    const response = await api.post("/users/home-groups/switch/", {
+      group_id: groupId,
+    });
     return response.data;
   },
 };
 
-
 export default authService;
-

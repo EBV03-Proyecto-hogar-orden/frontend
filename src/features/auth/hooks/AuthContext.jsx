@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { jwtDecode } from "jwt-decode";
 import authService from "../services/authService";
 import { mapUserFromToken } from "../utils/authMapper";
@@ -62,17 +68,16 @@ export const AuthProvider = ({ children }) => {
     const decoded = jwtDecode(access);
     const mappedUser = mapUserFromToken(decoded);
     setUser(mappedUser);
-    
-    // Fetch home group details upon successful login
+
     try {
       const groupData = await authService.getMyGroup();
       setHomeGroup(groupData);
-    } catch (e) {
+    } catch (error) {
       setHomeGroup(null);
     } finally {
       setLoadingGroup(false);
     }
-    
+
     return mappedUser;
   };
 
@@ -88,8 +93,18 @@ export const AuthProvider = ({ children }) => {
     return await authService.requestPasswordReset(email);
   };
 
-  const confirmPasswordReset = async (uid, token, password, passwordConfirm) => {
-    return await authService.confirmPasswordReset(uid, token, password, passwordConfirm);
+  const confirmPasswordReset = async (
+    uid,
+    token,
+    password,
+    passwordConfirm,
+  ) => {
+    return await authService.confirmPasswordReset(
+      uid,
+      token,
+      password,
+      passwordConfirm,
+    );
   };
 
   const createGroup = async (name) => {
@@ -115,25 +130,26 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      login,
-      register,
-      logout,
-      getPasswordRules,
-      requestPasswordReset,
-      confirmPasswordReset,
-      loading,
-      isAuthenticated: !!user,
-      homeGroup,
-      loadingGroup,
-      createGroup,
-      joinGroup,
-      switchGroup,
-      listGroups,
-      fetchHomeGroup
-    }}>
-
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        getPasswordRules,
+        requestPasswordReset,
+        confirmPasswordReset,
+        loading,
+        isAuthenticated: !!user,
+        homeGroup,
+        loadingGroup,
+        createGroup,
+        joinGroup,
+        switchGroup,
+        listGroups,
+        fetchHomeGroup,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
