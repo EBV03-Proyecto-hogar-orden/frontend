@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         logout();
         setLoadingGroup(false);
+        console.error("Error decoding token:", error);
       }
     } else {
       setLoadingGroup(false);
@@ -74,6 +75,7 @@ export const AuthProvider = ({ children }) => {
       setHomeGroup(groupData);
     } catch (error) {
       setHomeGroup(null);
+      console.error("Error fetching home group:", error);
     } finally {
       setLoadingGroup(false);
     }
