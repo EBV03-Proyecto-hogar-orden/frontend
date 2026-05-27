@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [homeGroup, setHomeGroup] = useState(null);
-  const loadingGroup = !!user && !homeGroup;
+  const [loadingGroup, setLoadingGroup] = useState(!!user);
 
   const logout = useCallback(() => {
     localStorage.removeItem("accessToken");
@@ -43,12 +43,15 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchHomeGroup = useCallback(async () => {
+    setLoadingGroup(true);
     try {
       const groupData = await authService.getMyGroup();
       setHomeGroup(groupData);
     } catch (error) {
       console.error("Error fetching home group:", error);
       setHomeGroup(null);
+    } finally {
+      setLoadingGroup(false);
     }
   }, []);
 
@@ -74,12 +77,15 @@ export const AuthProvider = ({ children }) => {
     const mappedUser = mapUserFromToken(decoded);
     setUser(mappedUser);
 
+    setLoadingGroup(true);
     try {
       const groupData = await authService.getMyGroup();
       setHomeGroup(groupData);
     } catch (error) {
       setHomeGroup(null);
       console.error("Error fetching home group:", error);
+    } finally {
+      setLoadingGroup(false);
     }
 
     return mappedUser;

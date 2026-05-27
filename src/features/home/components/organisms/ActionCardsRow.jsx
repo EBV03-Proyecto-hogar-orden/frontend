@@ -2,7 +2,7 @@ import { Plus, UserPlus, CheckCircle, BarChart2 } from 'lucide-react';
 import { ActionCard } from '../molecules/ActionCard';
 import '../styles/home.css';
 
-export const ActionCardsRow = ({ onOpenInvite }) => {
+export const ActionCardsRow = ({ onOpenInvite, onNewTask }) => {
   return (
     <div className="action-cards-grid">
       <ActionCard 
@@ -10,6 +10,7 @@ export const ActionCardsRow = ({ onOpenInvite }) => {
         icon={Plus} 
         colorVariant="yellow" 
         filled 
+        onClick={onNewTask}
       />
       <ActionCard 
         title="Invitar miembro" 
