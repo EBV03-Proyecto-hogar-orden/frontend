@@ -1,4 +1,3 @@
-import React from 'react';
 import { Calendar, User, MessageSquare, Trash2, Edit2 } from 'lucide-react';
 import { Badge } from '../atoms/Badge';
 import '../styles/home.css';

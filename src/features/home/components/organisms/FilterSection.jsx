@@ -1,4 +1,3 @@
-import React from 'react';
 import { FilterPill } from '../atoms/FilterPill';
 import '../styles/home.css';
 

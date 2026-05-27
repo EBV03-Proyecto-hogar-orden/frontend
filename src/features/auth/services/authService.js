@@ -61,6 +61,26 @@ export const authService = {
     });
     return response.data;
   },
+
+  getMembers: async () => {
+    const response = await api.get("/users/home-groups/members/");
+    return response.data;
+  },
+
+  addMember: async (memberData) => {
+    const response = await api.post("/users/home-groups/members/", memberData);
+    return response.data;
+  },
+
+  updateMember: async (memberId, memberData) => {
+    const response = await api.put(`/users/home-groups/members/${memberId}/`, memberData);
+    return response.data;
+  },
+
+  removeMember: async (memberId) => {
+    const response = await api.delete(`/users/home-groups/members/${memberId}/`);
+    return response.data;
+  },
 };
 
 export default authService;

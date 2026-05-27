@@ -1,18 +1,24 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { UserPlus, ChevronDown, LogOut, Copy, Check, Plus, Home } from 'lucide-react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { UserPlus, ChevronDown, LogOut, Copy, Check, Plus, Home, Users } from 'lucide-react';
 import { useAuth } from '../../../auth/hooks/AuthContext';
 import { Modal } from '../../../../shared/components';
+import { ManageMembersModal } from './ManageMembersModal';
 import '../styles/home.css';
 
-export const HomeHeader = () => {
+export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen: setIsInviteOpenExternal }) => {
   const { user, logout, homeGroup, createGroup, switchGroup, listGroups } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  
+  const [isInviteOpenLocal, setIsInviteOpenLocal] = useState(false);
+  const isInviteOpen = isInviteOpenExternal !== undefined ? isInviteOpenExternal : isInviteOpenLocal;
+  const setIsInviteOpen = setIsInviteOpenExternal !== undefined ? setIsInviteOpenExternal : setIsInviteOpenLocal;
+
   const [copied, setCopied] = useState(false);
   const dropdownRef = useRef(null);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSwitchOpen, setIsSwitchOpen] = useState(false);
+  const [isManageOpen, setIsManageOpen] = useState(false);
   const [newHomeName, setNewHomeName] = useState('');
   const [homeList, setHomeList] = useState([]);
   const [isLoadingHomes, setIsLoadingHomes] = useState(false);
@@ -92,6 +98,11 @@ export const HomeHeader = () => {
     setIsOpen(false);
   };
 
+  const handleOpenManageModal = () => {
+    setIsManageOpen(true);
+    setIsOpen(false);
+  };
+
   const handleCreateHome = async (e) => {
     e.preventDefault();
     if (!newHomeName.trim()) {
@@ -101,7 +112,7 @@ export const HomeHeader = () => {
     try {
       await createGroup(newHomeName);
       setIsCreateOpen(false);
-      await fetchHomeList(); // Refresh list on creation
+      await fetchHomeList();
     } catch (e) {
       setCreateError('Error al crear el hogar. Por favor, intenta de nuevo.');
     }
@@ -111,7 +122,7 @@ export const HomeHeader = () => {
     try {
       await switchGroup(groupId);
       setIsSwitchOpen(false);
-      await fetchHomeList(); // Refresh list on switch
+      await fetchHomeList();
     } catch (e) {
       setSwitchError('No se pudo cambiar de hogar.');
     }
@@ -160,6 +171,16 @@ export const HomeHeader = () => {
                   <Home size={16} />
                   Cambiar de hogar
                 </button>
+
+                {homeGroup && (
+                  <button 
+                    className="user-profile-dropdown__item"
+                    onClick={handleOpenManageModal}
+                  >
+                    <Users size={16} />
+                    Gestionar miembros
+                  </button>
+                )}
 
                 <button 
                   className="user-profile-dropdown__item user-profile-dropdown__item--logout"
@@ -317,6 +338,12 @@ export const HomeHeader = () => {
           </button>
         </div>
       </Modal>
+
+      <ManageMembersModal
+        isOpen={isManageOpen}
+        onClose={() => setIsManageOpen(false)}
+        onOpenInvite={() => setIsInviteOpen(true)}
+      />
     </>
   );
 };

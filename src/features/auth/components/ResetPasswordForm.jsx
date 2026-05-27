@@ -80,7 +80,6 @@ function ResetPasswordForm({ onSuccess }) {
 
   const handleModalClose = () => {
     setShowModal(false);
-    // Clear URL parameters
     window.history.replaceState({}, document.title, window.location.pathname);
     onSuccess();
   };

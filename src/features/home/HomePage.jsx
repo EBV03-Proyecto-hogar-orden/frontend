@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTasks } from './hooks/useTasks';
 import { HomeHeader } from './components/organisms/HomeHeader';
 import { ActionCardsRow } from './components/organisms/ActionCardsRow';
@@ -7,6 +7,7 @@ import { TaskGrid } from './components/organisms/TaskGrid';
 import './components/styles/home.css';
 
 const HomePage = () => {
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { 
     tasks, 
     statusFilter, 
@@ -19,10 +20,10 @@ const HomePage = () => {
 
   return (
     <div className="home-layout">
-      <HomeHeader />
+      <HomeHeader isInviteOpen={isInviteOpen} setIsInviteOpen={setIsInviteOpen} />
       
       <main className="home-content">
-        <ActionCardsRow />
+        <ActionCardsRow onOpenInvite={() => setIsInviteOpen(true)} />
         
         <FilterSection 
           statusFilter={statusFilter}

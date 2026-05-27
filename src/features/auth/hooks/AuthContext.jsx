@@ -11,11 +11,29 @@ import { mapUserFromToken } from "../utils/authMapper";
 
 const AuthContext = createContext();
 
+const deriveAuthState = (token, currentTime = Date.now()) => {
+  if (!token) return { isValid: false, user: null, reason: "no_token" };
+  try {
+    const decoded = jwtDecode(token);
+    if (decoded.exp * 1000 > currentTime) {
+      return { isValid: true, user: mapUserFromToken(decoded), reason: null };
+    }
+    return { isValid: false, user: null, reason: "expired" };
+  } catch (error) {
+    return { isValid: false, user: null, reason: "invalid_format" };
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const token = localStorage.getItem("accessToken");
+    const auth = deriveAuthState(token);
+    return auth.isValid ? auth.user : null;
+  });
+
   const [homeGroup, setHomeGroup] = useState(null);
-  const [loadingGroup, setLoadingGroup] = useState(true);
+  const loadingGroup = !!user && !homeGroup;
 
   const logout = useCallback(() => {
     localStorage.removeItem("accessToken");
@@ -25,39 +43,25 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchHomeGroup = useCallback(async () => {
-    setLoadingGroup(true);
     try {
       const groupData = await authService.getMyGroup();
       setHomeGroup(groupData);
     } catch (error) {
+      console.error("Error fetching home group:", error);
       setHomeGroup(null);
-    } finally {
-      setLoadingGroup(false);
     }
   }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        if (decoded.exp * 1000 > Date.now()) {
-          setUser(mapUserFromToken(decoded));
-          fetchHomeGroup();
-        } else {
-          logout();
-          setLoadingGroup(false);
-        }
-      } catch (error) {
-        logout();
-        setLoadingGroup(false);
-        console.error("Error decoding token:", error);
-      }
-    } else {
-      setLoadingGroup(false);
+    const auth = deriveAuthState(token);
+
+    if (auth.isValid) {
+      fetchHomeGroup();
+    } else if (auth.reason === "expired" || auth.reason === "invalid_format") {
+      logout();
     }
-    setLoading(false);
-  }, [logout, fetchHomeGroup]);
+  }, [fetchHomeGroup, logout]);
 
   const login = async (email, password) => {
     const data = await authService.login(email, password);
@@ -76,8 +80,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setHomeGroup(null);
       console.error("Error fetching home group:", error);
-    } finally {
-      setLoadingGroup(false);
     }
 
     return mappedUser;
@@ -131,6 +133,22 @@ export const AuthProvider = ({ children }) => {
     return await authService.listHomeGroups();
   };
 
+  const getMembers = async () => {
+    return await authService.getMembers();
+  };
+
+  const addMember = async (memberData) => {
+    return await authService.addMember(memberData);
+  };
+
+  const updateMember = async (memberId, memberData) => {
+    return await authService.updateMember(memberId, memberData);
+  };
+
+  const removeMember = async (memberId) => {
+    return await authService.removeMember(memberId);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -141,7 +159,7 @@ export const AuthProvider = ({ children }) => {
         getPasswordRules,
         requestPasswordReset,
         confirmPasswordReset,
-        loading,
+        loading: false,
         isAuthenticated: !!user,
         homeGroup,
         loadingGroup,
@@ -150,6 +168,10 @@ export const AuthProvider = ({ children }) => {
         switchGroup,
         listGroups,
         fetchHomeGroup,
+        getMembers,
+        addMember,
+        updateMember,
+        removeMember,
       }}
     >
       {children}
