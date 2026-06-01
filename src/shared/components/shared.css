@@ -90,12 +90,14 @@
 .modal-content {
   background: #ffffff;
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
   border-radius: 28px;
   padding: 32px;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 
 .modal-close {

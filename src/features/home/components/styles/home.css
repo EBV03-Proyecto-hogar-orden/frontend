@@ -1,21 +1,21 @@
 :root {
-  --color-yellow-light: #fef08a;
-  --color-yellow-dark: #eab308;
-  --color-blue-light: #93c5fd;
-  --color-blue-dark: #0284c7;
-  --color-green-light: #86efac;
-  --color-green-dark: #16a34a;
-  --color-red-light: #fca5a5;
-  --color-red-dark: #dc2626;
-  --color-orange-light: #fed7aa;
+  --color-yellow-light: #facc15;
+  --color-yellow-dark: #ca8a04;
+  --color-blue-light: #60a5fa;
+  --color-blue-dark: #1d4ed8;
+  --color-green-light: #4ade80;
+  --color-green-dark: #15803d;
+  --color-red-light: #f87171;
+  --color-red-dark: #b91c1c;
+  --color-orange-light: #fb923c;
   --color-orange-dark: #ea580c;
-  --color-purple-light: #d8b4fe;
-  --color-purple-dark: #a855f7;
-  --color-gray-light: #f3f4f6;
-  --color-gray-dark: #6b7280;
-  --color-text-main: #1f2937;
-  --color-text-muted: #9ca3af;
-  --bg-page: #f9fafb;
+  --color-purple-light: #a78bfa;
+  --color-purple-dark: #7c3aed;
+  --color-gray-light: #e2e8f0;
+  --color-gray-dark: #334155;
+  --color-text-main: #111827;
+  --color-text-muted: #475569;
+  --bg-page: #eff6ff;
   --border-radius-lg: 16px;
   --border-radius-md: 12px;
   --border-radius-sm: 8px;
@@ -55,7 +55,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #0284c7;
+  background-color: var(--color-blue-dark);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -831,9 +831,9 @@
 }
 
 .badge-role--creator {
-  background-color: #fef3c7;
-  color: #b45309;
-  border: 1px solid rgba(180, 83, 9, 0.1);
+  background-color: #fde68a;
+  color: #92400e;
+  border: 1px solid rgba(146, 64, 14, 0.18);
 }
 
 .badge-role--member {
@@ -865,13 +865,13 @@
 }
 
 .btn-member-action.edit:hover {
-  background-color: var(--color-blue-light);
-  color: #2b7094;
+  background-color: var(--color-blue-dark);
+  color: white;
 }
 
 .btn-member-action.delete:hover {
-  background-color: var(--color-red-light);
-  color: var(--color-red-dark);
+  background-color: var(--color-red-dark);
+  color: white;
 }
 
 /* Forms */
@@ -894,7 +894,7 @@
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 

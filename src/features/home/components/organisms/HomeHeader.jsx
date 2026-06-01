@@ -2,11 +2,10 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { UserPlus, ChevronDown, LogOut, Copy, Check, Plus, Home, Users, LogIn } from 'lucide-react';
 import { useAuth } from '../../../auth/hooks/AuthContext';
 import { Modal } from '../../../../shared/components';
-import { ManageMembersModal } from './ManageMembersModal';
 import { JoinHomeGroupModal } from './JoinHomeGroupModal';
 import '../styles/home.css';
 
-export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen: setIsInviteOpenExternal, onOpenJoinHome }) => {
+export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen: setIsInviteOpenExternal, onOpenJoinHome, onOpenManage }) => {
   const { user, logout, homeGroup, createGroup, switchGroup, listGroups } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   
@@ -19,7 +18,6 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSwitchOpen, setIsSwitchOpen] = useState(false);
-  const [isManageOpen, setIsManageOpen] = useState(false);
   const [isJoinOpen, setIsJoinOpen] = useState(false);
   const [newHomeName, setNewHomeName] = useState('');
   const [homeList, setHomeList] = useState([]);
@@ -100,10 +98,7 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
     setIsOpen(false);
   };
 
-  const handleOpenManageModal = () => {
-    setIsManageOpen(true);
-    setIsOpen(false);
-  };
+  // external manage handler prop will open the ManageMembersModal in parent
 
   const handleOpenJoinModal = () => {
     setIsJoinOpen(true);
@@ -190,7 +185,7 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
                 {homeGroup && (
                   <button 
                     className="user-profile-dropdown__item"
-                    onClick={handleOpenManageModal}
+                    onClick={() => { onOpenManage && onOpenManage(); setIsOpen(false); }}
                   >
                     <Users size={16} />
                     Gestionar miembros
@@ -353,12 +348,6 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
           </button>
         </div>
       </Modal>
-
-      <ManageMembersModal
-        isOpen={isManageOpen}
-        onClose={() => setIsManageOpen(false)}
-        onOpenInvite={() => setIsInviteOpen(true)}
-      />
 
       <JoinHomeGroupModal
         isOpen={isJoinOpen}

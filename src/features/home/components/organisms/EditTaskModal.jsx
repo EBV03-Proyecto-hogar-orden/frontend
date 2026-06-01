@@ -17,10 +17,16 @@ export const EditTaskModal = ({ isOpen, onClose, task, onTaskUpdated, onDelete }
     description: '',
     priority: 'MEDIA',
     due_date: '',
+    status: 'Pendiente',
     member_id: ''
   });
 
   const [error, setError] = useState('');
+
+  const mapPriorityFrontToBack = (priority) => {
+    const map = { Alta: 'ALTA', Media: 'MEDIA', Baja: 'BAJA' };
+    return map[priority] || 'MEDIA';
+  };
 
   useEffect(() => {
     if (isOpen && task) {
@@ -28,8 +34,9 @@ export const EditTaskModal = ({ isOpen, onClose, task, onTaskUpdated, onDelete }
       setForm({
         name: task.title || '',
         description: task.description || '',
-        priority: task.priority || 'MEDIA',
-        due_date: task.date || '',
+        priority: mapPriorityFrontToBack(task.priority),
+        due_date: task.rawDueDate || '',
+        status: task.status || 'Pendiente',
         member_id: task.assignee?.id || ''
       });
       setError('');
@@ -67,6 +74,16 @@ export const EditTaskModal = ({ isOpen, onClose, task, onTaskUpdated, onDelete }
       
       await taskService.modifyTask(task.id, taskData);
       
+      // Update status if changed (backend expects codes)
+      const mapStatusFrontToBack = (s) => {
+        const map = { 'Pendiente': 'PENDIENTE', 'En progreso': 'PROGRESO', 'Completada': 'COMPLETADA' };
+        return map[s] || 'PENDIENTE';
+      };
+
+      if (form.status && form.status !== task.status) {
+        await taskService.updateTaskStatus(task.id, mapStatusFrontToBack(form.status));
+      }
+
       // Update assignment if changed
       if (form.member_id && form.member_id !== (task.assignee?.id || '')) {
         await taskService.assignTask(task.id, parseInt(form.member_id, 10));
@@ -161,6 +178,26 @@ export const EditTaskModal = ({ isOpen, onClose, task, onTaskUpdated, onDelete }
                 <option value="BAJA">Baja</option>
                 <option value="MEDIA">Media</option>
                 <option value="ALTA">Alta</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Estado</label>
+              <select
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+                disabled={isSubmitting}
+                style={{
+                  padding: '10px 14px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: 'var(--border-radius-md)',
+                  fontSize: '14px',
+                  backgroundColor: 'white'
+                }}
+              >
+                <option value="Pendiente">Pendiente</option>
+                <option value="En progreso">En progreso</option>
+                <option value="Completada">Completada</option>
               </select>
             </div>
 

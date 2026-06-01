@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Edit2, Trash2, ArrowLeft, Shield, User, Mail, Lock, Plus, Check, Loader, UserMinus } from 'lucide-react';
+import { UserPlus, Trash2, ArrowLeft, Shield, User, Mail, Lock, Check, Loader, UserMinus } from 'lucide-react';
 import { useAuth } from '../../../auth/hooks/AuthContext';
 import { Modal } from '../../../../shared/components';
 import '../styles/home.css';
@@ -20,6 +20,7 @@ export const ManageMembersModal = ({ isOpen, onClose, onOpenInvite }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isCurrentUserCreator, setIsCurrentUserCreator] = useState(false);
   
   // View states: 'list' | 'add' | 'edit'
   const [view, setView] = useState('list');
@@ -42,7 +43,21 @@ export const ManageMembersModal = ({ isOpen, onClose, onOpenInvite }) => {
     last_name: ''
   });
 
-  const isCurrentUserCreator = homeGroup?.creator === user?.id;
+  const normalizeId = (value) => (value === undefined || value === null ? '' : String(value));
+  const getGroupCreatorId = (group) => {
+    if (!group) return '';
+    if (typeof group.creator === 'object') return normalizeId(group.creator.id);
+    return normalizeId(group.creator || group.creator_id);
+  };
+
+  useEffect(() => {
+    const currentUserIsCreator = !!(
+      user &&
+      homeGroup &&
+      normalizeId(user.id) === getGroupCreatorId(homeGroup)
+    );
+    setIsCurrentUserCreator(currentUserIsCreator);
+  }, [homeGroup, user]);
 
   // Load members when modal opens
   useEffect(() => {
@@ -60,6 +75,9 @@ export const ManageMembersModal = ({ isOpen, onClose, onOpenInvite }) => {
     try {
       const data = await getMembers();
       setMembers(data);
+      const me = data.find((m) => normalizeId(m.id) === normalizeId(user?.id));
+      const amCreator = (me && (me.is_creator || normalizeId(me.id) === getGroupCreatorId(homeGroup)));
+      setIsCurrentUserCreator(!!amCreator);
     } catch (e) {
       console.error('Error fetching members:', e);
       setError('No se pudieron cargar los miembros del hogar.');
@@ -221,13 +239,6 @@ export const ManageMembersModal = ({ isOpen, onClose, onOpenInvite }) => {
                 <UserPlus size={16} />
                 <span>Invitar miembro</span>
               </button>
-
-              {isCurrentUserCreator && (
-                <button className="btn-add-member" onClick={() => setView('add')}>
-                  <Plus size={16} />
-                  <span>Agregar miembro</span>
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -251,8 +262,8 @@ export const ManageMembersModal = ({ isOpen, onClose, onOpenInvite }) => {
             ) : (
               <div className="members-cards-grid">
                 {members.map((member) => {
-                  const isSelf = member.id === user?.id;
-                  const isCreator = member.is_creator;
+                  const isSelf = normalizeId(member.id) === normalizeId(user?.id);
+                  const isCreator = member.is_creator || normalizeId(member.id) === getGroupCreatorId(homeGroup);
                   const displayName = `${member.first_name} ${member.last_name}`.trim() || member.username;
 
                   return (
@@ -284,18 +295,6 @@ export const ManageMembersModal = ({ isOpen, onClose, onOpenInvite }) => {
                         )}
 
                         <div className="action-buttons-group">
-                          {/* Edit button: only visible if current user is creator AND targeting someone else */}
-                          {isCurrentUserCreator && !isCreator && (
-                            <button 
-                              className="btn-member-action edit" 
-                              title="Editar miembro"
-                              onClick={() => handleEditClick(member)}
-                              disabled={isSubmitting}
-                            >
-                              <Edit2 size={14} />
-                            </button>
-                          )}
-
                           {/* Delete/Remove button:
                               1. Current user is creator AND targeting another member (remover)
                               2. Current user is a regular member AND targeting themselves (salir)

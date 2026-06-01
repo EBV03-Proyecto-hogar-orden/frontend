@@ -7,12 +7,14 @@ import { TaskGrid } from './components/organisms/TaskGrid';
 import { CreateTaskModal } from './components/organisms/CreateTaskModal';
 import { EditTaskModal } from './components/organisms/EditTaskModal';
 import { JoinHomeGroupModal } from './components/organisms/JoinHomeGroupModal';
+import { ManageMembersModal } from './components/organisms/ManageMembersModal';
 import { Loader } from 'lucide-react';
 import './components/styles/home.css';
 
 const HomePage = () => {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [isManageOpen, setIsManageOpen] = useState(false);
   const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [isJoinHomeOpen, setIsJoinHomeOpen] = useState(false);
@@ -45,13 +47,14 @@ const HomePage = () => {
         isInviteOpen={isInviteOpen} 
         setIsInviteOpen={setIsInviteOpen}
         onOpenJoinHome={handleOpenJoinHome}
+        onOpenManage={() => setIsManageOpen(true)}
       />
       
       <main className="home-content">
         <ActionCardsRow 
           onOpenInvite={() => setIsInviteOpen(true)} 
           onNewTask={() => setIsNewTaskOpen(true)}
-          onOpenManageMembers={() => setIsInviteOpen(true)}
+          onOpenManageMembers={() => setIsManageOpen(true)}
         />
         
         <FilterSection 
@@ -96,6 +99,11 @@ const HomePage = () => {
         isOpen={isJoinHomeOpen} 
         onClose={() => setIsJoinHomeOpen(false)}
         onJoinSuccess={() => {}}
+      />
+      <ManageMembersModal
+        isOpen={isManageOpen}
+        onClose={() => setIsManageOpen(false)}
+        onOpenInvite={() => setIsInviteOpen(true)}
       />
     </div>
   );
