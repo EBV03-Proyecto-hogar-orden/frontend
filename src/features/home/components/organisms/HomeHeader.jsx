@@ -146,7 +146,7 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
           <div className="user-profile-dropdown" ref={dropdownRef}>
             <div className="user-profile-dropdown__trigger" onClick={toggleDropdown}>
               <div className="avatar avatar--blue">
-                {avatarId}
+                <Home size={16} />
               </div>
               <ChevronDown size={16} className={`text-gray-400 dropdown-arrow ${isOpen ? 'dropdown-arrow--open' : ''}`} />
             </div>

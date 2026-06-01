@@ -101,9 +101,16 @@ export const useTasks = () => {
   const stats = useMemo(() => {
     const total = tasks.length;
     const completed = tasks.filter(t => t.status === 'Completada').length;
+    const pending = tasks.filter(t => t.status === 'Pendiente').length;
+    const inProgress = tasks.filter(t => t.status === 'En progreso').length;
+    const completionRate = total ? Math.round((completed / total) * 100) : 0;
+
     return {
       total,
       completed,
+      pending,
+      inProgress,
+      completionRate,
       members: homeGroup?.members?.length || 1
     };
   }, [tasks, homeGroup]);

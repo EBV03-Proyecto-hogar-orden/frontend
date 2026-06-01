@@ -21,6 +21,7 @@ const HomePage = () => {
   
   const { 
     tasks, 
+    stats,
     isLoading,
     error,
     statusFilter, 
@@ -31,6 +32,8 @@ const HomePage = () => {
     deleteTask,
     loadTasks
   } = useTasks();
+
+  const [isStatsPanelVisible, setIsStatsPanelVisible] = useState(false);
 
   const handleEditTask = (task) => {
     setEditingTask(task);
@@ -55,8 +58,43 @@ const HomePage = () => {
           onOpenInvite={() => setIsInviteOpen(true)} 
           onNewTask={() => setIsNewTaskOpen(true)}
           onOpenManageMembers={() => setIsManageOpen(true)}
+          onOpenStats={() => setIsStatsPanelVisible(prev => !prev)}
         />
-        
+
+        {isStatsPanelVisible && (
+          <section className="stats-panel">
+            <div className="stats-panel__header">
+              <div>
+                <h2>Resumen de estadísticas</h2>
+                <p>Una vista rápida del estado actual del hogar y las tareas.</p>
+              </div>
+              <span className="stats-panel__badge">{stats.completionRate}% completado</span>
+            </div>
+            <div className="stats-panel__grid">
+              <div className="stats-panel__card">
+                <span className="stats-panel__value">{stats.total}</span>
+                <span className="stats-panel__label">Tareas totales</span>
+              </div>
+              <div className="stats-panel__card">
+                <span className="stats-panel__value">{stats.completed}</span>
+                <span className="stats-panel__label">Completadas</span>
+              </div>
+              <div className="stats-panel__card">
+                <span className="stats-panel__value">{stats.inProgress}</span>
+                <span className="stats-panel__label">En progreso</span>
+              </div>
+              <div className="stats-panel__card">
+                <span className="stats-panel__value">{stats.pending}</span>
+                <span className="stats-panel__label">Pendientes</span>
+              </div>
+              <div className="stats-panel__card stats-panel__card--wide">
+                <span className="stats-panel__value">{stats.members}</span>
+                <span className="stats-panel__label">Miembros en el hogar</span>
+              </div>
+            </div>
+          </section>
+        )}
+
         <FilterSection 
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}

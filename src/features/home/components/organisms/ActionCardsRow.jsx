@@ -2,7 +2,7 @@ import { Plus, UserPlus, Users, BarChart2 } from 'lucide-react';
 import { ActionCard } from '../molecules/ActionCard';
 import '../styles/home.css';
 
-export const ActionCardsRow = ({ onOpenInvite, onNewTask, onOpenManageMembers }) => {
+export const ActionCardsRow = ({ onOpenInvite, onNewTask, onOpenManageMembers, onOpenStats }) => {
   return (
     <div className="action-cards-grid">
       <ActionCard 
@@ -29,7 +29,9 @@ export const ActionCardsRow = ({ onOpenInvite, onNewTask, onOpenManageMembers })
       <ActionCard 
         title="Estadísticas" 
         icon={BarChart2} 
-        colorVariant="yellow" 
+        colorVariant="orange" 
+        filled
+        onClick={onOpenStats}
       />
     </div>
   );
