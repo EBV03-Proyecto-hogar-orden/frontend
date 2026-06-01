@@ -5,12 +5,18 @@ import { ActionCardsRow } from './components/organisms/ActionCardsRow';
 import { FilterSection } from './components/organisms/FilterSection';
 import { TaskGrid } from './components/organisms/TaskGrid';
 import { CreateTaskModal } from './components/organisms/CreateTaskModal';
+import { EditTaskModal } from './components/organisms/EditTaskModal';
+import { JoinHomeGroupModal } from './components/organisms/JoinHomeGroupModal';
 import { Loader } from 'lucide-react';
 import './components/styles/home.css';
 
 const HomePage = () => {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [isEditTaskOpen, setIsEditTaskOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [isJoinHomeOpen, setIsJoinHomeOpen] = useState(false);
+  
   const { 
     tasks, 
     isLoading,
@@ -24,14 +30,28 @@ const HomePage = () => {
     loadTasks
   } = useTasks();
 
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setIsEditTaskOpen(true);
+  };
+
+  const handleOpenJoinHome = () => {
+    setIsJoinHomeOpen(true);
+  };
+
   return (
     <div className="home-layout">
-      <HomeHeader isInviteOpen={isInviteOpen} setIsInviteOpen={setIsInviteOpen} />
+      <HomeHeader 
+        isInviteOpen={isInviteOpen} 
+        setIsInviteOpen={setIsInviteOpen}
+        onOpenJoinHome={handleOpenJoinHome}
+      />
       
       <main className="home-content">
         <ActionCardsRow 
           onOpenInvite={() => setIsInviteOpen(true)} 
-          onNewTask={() => setIsNewTaskOpen(true)} 
+          onNewTask={() => setIsNewTaskOpen(true)}
+          onOpenManageMembers={() => setIsInviteOpen(true)}
         />
         
         <FilterSection 
@@ -53,6 +73,7 @@ const HomePage = () => {
             tasks={tasks}
             updateTaskStatus={updateTaskStatus}
             deleteTask={deleteTask}
+            onEditTask={handleEditTask}
           />
         )}
       </main>
@@ -61,6 +82,20 @@ const HomePage = () => {
         isOpen={isNewTaskOpen} 
         onClose={() => setIsNewTaskOpen(false)} 
         onTaskCreated={loadTasks} 
+      />
+
+      <EditTaskModal 
+        isOpen={isEditTaskOpen} 
+        onClose={() => setIsEditTaskOpen(false)} 
+        task={editingTask}
+        onTaskUpdated={loadTasks}
+        onDelete={deleteTask}
+      />
+
+      <JoinHomeGroupModal 
+        isOpen={isJoinHomeOpen} 
+        onClose={() => setIsJoinHomeOpen(false)}
+        onJoinSuccess={() => {}}
       />
     </div>
   );

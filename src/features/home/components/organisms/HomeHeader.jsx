@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { UserPlus, ChevronDown, LogOut, Copy, Check, Plus, Home, Users } from 'lucide-react';
+import { UserPlus, ChevronDown, LogOut, Copy, Check, Plus, Home, Users, LogIn } from 'lucide-react';
 import { useAuth } from '../../../auth/hooks/AuthContext';
 import { Modal } from '../../../../shared/components';
 import { ManageMembersModal } from './ManageMembersModal';
+import { JoinHomeGroupModal } from './JoinHomeGroupModal';
 import '../styles/home.css';
 
-export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen: setIsInviteOpenExternal }) => {
+export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen: setIsInviteOpenExternal, onOpenJoinHome }) => {
   const { user, logout, homeGroup, createGroup, switchGroup, listGroups } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   
@@ -19,6 +20,7 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSwitchOpen, setIsSwitchOpen] = useState(false);
   const [isManageOpen, setIsManageOpen] = useState(false);
+  const [isJoinOpen, setIsJoinOpen] = useState(false);
   const [newHomeName, setNewHomeName] = useState('');
   const [homeList, setHomeList] = useState([]);
   const [isLoadingHomes, setIsLoadingHomes] = useState(false);
@@ -103,6 +105,11 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
     setIsOpen(false);
   };
 
+  const handleOpenJoinModal = () => {
+    setIsJoinOpen(true);
+    setIsOpen(false);
+  };
+
   const handleCreateHome = async (e) => {
     e.preventDefault();
     if (!newHomeName.trim()) {
@@ -170,6 +177,14 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
                 >
                   <Home size={16} />
                   Cambiar de hogar
+                </button>
+
+                <button 
+                  className="user-profile-dropdown__item"
+                  onClick={handleOpenJoinModal}
+                >
+                  <LogIn size={16} />
+                  Unirse con código
                 </button>
 
                 {homeGroup && (
@@ -343,6 +358,12 @@ export const HomeHeader = ({ isInviteOpen: isInviteOpenExternal, setIsInviteOpen
         isOpen={isManageOpen}
         onClose={() => setIsManageOpen(false)}
         onOpenInvite={() => setIsInviteOpen(true)}
+      />
+
+      <JoinHomeGroupModal
+        isOpen={isJoinOpen}
+        onClose={() => setIsJoinOpen(false)}
+        onJoinSuccess={() => {}}
       />
     </>
   );

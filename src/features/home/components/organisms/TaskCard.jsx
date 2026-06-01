@@ -2,7 +2,7 @@ import { Calendar, User, MessageSquare, Trash2, Edit2 } from 'lucide-react';
 import { Badge } from '../atoms/Badge';
 import '../styles/home.css';
 
-export const TaskCard = ({ task, onStatusChange, onDelete }) => {
+export const TaskCard = ({ task, onStatusChange, onDelete, onEdit }) => {
   return (
     <div className="task-card">
       <div className="task-card__header">
@@ -41,7 +41,10 @@ export const TaskCard = ({ task, onStatusChange, onDelete }) => {
         </div>
         
         <div className="task-card__actions">
-          <button className="btn-action btn-action--edit">
+          <button 
+            className="btn-action btn-action--edit"
+            onClick={() => onEdit && onEdit(task)}
+          >
             <Edit2 size={14} /> Editar
           </button>
           <button className="btn-icon btn-icon--yellow">

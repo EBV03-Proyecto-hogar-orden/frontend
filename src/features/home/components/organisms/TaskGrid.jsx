@@ -1,7 +1,7 @@
 import { TaskCard } from './TaskCard';
 import '../styles/home.css';
 
-export const TaskGrid = ({ tasks, updateTaskStatus, deleteTask }) => {
+export const TaskGrid = ({ tasks, updateTaskStatus, deleteTask, onEditTask }) => {
   if (tasks.length === 0) {
     return <div className="task-grid-empty">No hay tareas que coincidan con los filtros.</div>;
   }
@@ -14,6 +14,7 @@ export const TaskGrid = ({ tasks, updateTaskStatus, deleteTask }) => {
           task={task} 
           onStatusChange={updateTaskStatus}
           onDelete={deleteTask}
+          onEdit={onEditTask}
         />
       ))}
     </div>

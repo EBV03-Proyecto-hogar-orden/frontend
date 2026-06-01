@@ -1,8 +1,8 @@
-import { Plus, UserPlus, CheckCircle, BarChart2 } from 'lucide-react';
+import { Plus, UserPlus, Users, BarChart2 } from 'lucide-react';
 import { ActionCard } from '../molecules/ActionCard';
 import '../styles/home.css';
 
-export const ActionCardsRow = ({ onOpenInvite, onNewTask }) => {
+export const ActionCardsRow = ({ onOpenInvite, onNewTask, onOpenManageMembers }) => {
   return (
     <div className="action-cards-grid">
       <ActionCard 
@@ -20,9 +20,11 @@ export const ActionCardsRow = ({ onOpenInvite, onNewTask }) => {
         onClick={onOpenInvite}
       />
       <ActionCard 
-        title="Completadas" 
-        icon={CheckCircle} 
-        colorVariant="blue" 
+        title="Gestionar miembros" 
+        icon={Users} 
+        colorVariant="purple" 
+        filled
+        onClick={onOpenManageMembers}
       />
       <ActionCard 
         title="Estadísticas" 
